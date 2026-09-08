@@ -10,13 +10,13 @@
 
 ---
 
-一个主要基于[`OpenAI SDK`](https://pypi.org/project/openai/)开发的聊天机器人中间件
+一个主要基于 [`OpenAI SDK`](https://pypi.org/project/openai/) 开发的聊天机器人中间件
 将状态管理封装到API中，以提供带状态的接口服务，降低对接成本
 
 目前，复读机具有以下特点：
 
  - 平行数据管理：支持平行数据管理，用户可以随意切换平行数据，减少数据丢失的风险
- - 多模型支持：支持OpenAI接口的对话模型即可调用，可以根据需要选择不同的模型进行对话
+ - 多模型支持：支持 OpenAI 接口的对话模型即可调用，可以根据需要选择不同的模型进行对话
  - 更高自由度：用户可以自定义会话注入、切换、删除，以及自定义提示词和模型参数
  - MD图片渲染：可以将回复以图片的形式渲染发送，减少对正常聊天的干扰
  - 用户自治设计：用户可以自己管理自己的所有用户数据
@@ -29,62 +29,37 @@
 ## 注意事项:
 
  - 使用者需确认生成内容的合法性，并自行承担使用本服务可能产生的风险。
- - 如果你觉得这个Bot非常好用，请去看一下 [`Deepseek`](https://www.deepseek.com/) 的官网吧，这个Bot最初就是基于他们的模型API文档开发的。(OpenAI兼容就是省事啊~)
- - 机器人本体是免费的，开发者不承担使用时的API费用，还请注意。
+ - 如果你觉得这个 Bot 非常好用，请去看一下 [`Deepseek`](https://www.deepseek.com/) 的官网吧，这个 Bot 最初就是基于他们的模型API文档开发的。( OpenAI 兼容就是省事啊~)
+ - 机器人本体是免费的，开发者不承担使用时的 API 费用，还请注意。
 
 ---
 
 ## License
 
-这个项目基于[MIT License](LICENSE)发布。
+这个项目基于 [MIT License](LICENSE) 发布。
 
 ---
 
 ### 依赖项:
 
-| Name              | Version  | License                              | License Link                                                                        | Where it is used                    | Reasons                               |
-|-------------------|----------|--------------------------------------|-------------------------------------------------------------------------------------|-------------------------------------|---------------------------------------|
-| Markdown          | 3.10.2   | BSD 3-Clause License                 | [BSD-3-Clause](https://github.com/Python-Markdown/markdown/blob/master/LICENSE.md)  | `core.markdown`                     | Parses Markdown text into HTML        |
-| pyyaml            | 6.0.3    | MIT License                          | [MIT](https://github.com/yaml/pyyaml/blob/main/LICENSE)                             | `core.api` & `core.global_config_manager` | Read configuration file         |
-| aiofiles          | 25.1.0   | Apache Software License              | [Apache-2.0](https://github.com/Tinche/aiofiles/blob/main/LICENSE)                  | `core.data_manager`                 | Asynchronous file support             |
-| environs          | 14.5.0   | MIT License                          | [MIT](https://github.com/sloria/environs/blob/main/LICENSE)                         | `run_repeater.py` & `core.global_config_manager` | Support for environment variables |
-| fastapi           | 0.129.0  | MIT License                          | [MIT](https://github.com/fastapi/fastapi/blob/master/LICENSE)                       | `core.api`                          | Build API                             |
-| httpx             | 0.28.1   | BSD License                          | [BSD-3-Clause](https://github.com/encode/httpx/blob/master/LICENSE.md)              | *Entire Project*                    | Asynchronous HTTP client              |
-| loguru            | 0.7.3    | MIT License                          | [MIT](https://github.com/Delgan/loguru/blob/master/LICENSE)                         | *Entire Project*                    | Logging                               |
-| openai            | 2.21.0   | Apache Software License              | [Apache-2.0](https://github.com/openai/openai-python/blob/main/LICENSE)             | `core.call_api`                     | Call the OpenAI API                   |
-| orjson            | 3.11.7   | Apache Software License; MIT License; MPL-2.0 | [Apache-2.0](https://github.com/ijl/orjson/blob/master/LICENSE-APACHE) / [MIT](https://github.com/ijl/orjson/blob/master/LICENSE-MIT) / [MPL-2.0](https://github.com/ijl/orjson/blob/master/LICENSE-MPL-2.0) | `core.DataManager` & `API`        | High-performance JSON  resolution |
-| pydantic          | 2.11.7   | MIT License                          | [MIT](https://github.com/pydantic/pydantic/blob/main/LICENSE)                       | `core.global_config_manager` & `core.api` | Simple and convenient data validation |
-| python-multipart  | 0.0.22   | Apache Software License              | [Apache-2.0](https://github.com/Kludex/python-multipart/blob/master/LICENSE.txt)    | `core.data_manager` & `core.api`    | Support for form data                 |
-| uvicorn           | 0.40.0   | BSD License                          | [BSD-3-Clause](https://github.com/Kludex/uvicorn/blob/main/LICENSE.md)              | `run_repeater.py`                   | Run FastAPI                           |
-| numpy             | 2.4.2    | BSD License                          | [BSD-3-Clause](https://github.com/numpy/numpy/blob/main/LICENSE.txt)                | *Entire Project*                    | Speed up batch computing of data      |
-| python-box        | 7.3.2    | MIT License                          | [MIT](https://github.com/cdgriffith/Box/blob/master/LICENSE)                        | `core.global_config_manager`        | Mixed configuration files             |
-| jinja2            | 3.1.6    | BSD-3-Clause license                 | [BSD-3-Clause](https://github.com/pallets/jinja/blob/main/LICENSE.txt)              | `core.text_template_processer`      | Render text templates                 |
-| tzdata            | 2025.3   | Apache Software License              | [Apache-2.0](https://github.com/python/tzdata/blob/master/LICENSE)                  | `core.text_template_processer`      | Get timezone information              |
-| yarl              | 1.23.0   | MIT License                          | [MIT](https://github.com/aio-libs/yarl/blob/master/LICENSE)                         | *Entire Project*                    | URL parsing                           |
-| bleach            | 6.3.0    | Apache-2.0                           | [Apache-2.0](https://github.com/mozilla/bleach/blob/main/LICENSE)                   | `core.markdown_render`              | Clean HTML                            |
-| asteval           | 1.0.8    | MIT License                          | [MIT](https://github.com/newville/asteval/blob/main/LICENSE)                        | `core.model_requester.tools`        | Assist AI in performing mathematical calculations. |
-| pip-requirements-parser | 32.0.1 | MIT License                      | [MIT](https://github.com/jazzband/pip-requirements-parser/blob/main/LICENSE)        | `core.requirements_version_checker` | Parse requirements.txt files.         |
-| jsonpatch         | 1.33     | BSD-3-Clause license                 | [BSD-3-Clause license](https://github.com/stefankoegl/python-json-patch/blob/master/LICENSE) | `core.data_manager`        | JSON Diff & Patch                     |
-| pythonping        | 1.1.4    | MIT License                          | [MIT](https://github.com/alessandromaggio/pythonping/blob/main/LICENSE)             | `core.api`                          | Checking network connectivity         |
-| cachetools        | 7.1.4    | MIT License                          | [MIT](https://github.com/tkem/cachetools/blob/master/LICENSE)                       | *Entire Project*                    | Cachetools is a caching library for Python |
-
-具体依赖的License请查看[LICENSES](./LICENSES/index.md)
+众所周知，现代软件通常建立在巨人的肩膀上
+所以，这个项目也同样需要依赖一些第三方库
+请访问 [LICENSES](./LICENSES/index.md)
+查看该项目所依赖的第三方库
 
 ---
 
 ## 安装部署
 
-**推荐Python3.11及以上版本安装**
-> PS: 复读机可能会兼容Python3.11以前的版本
-> 但我们并未对其进行过测试
-> 复读机有可能会需要至少3.10的版本
-> 此处3.11为开发环境版本
+**使用 Python3.11 及以上版本安装**
+> Repeater 使用了 Python3.11 的一些新特性
+> 请在部署时确保你的 Python 版本符合要求
 
 ### 自动安装
 
 1. 将项目克隆到本地
 2. 进入项目目录
-5. 运行 `run.py` 启动器 (该项目的详情请查看[Sloves_Starter](https://github.com/qeggs-dev/Sloves_Starter))
+5. 运行 `run.py` 启动器 (该项目的详情请查看 [Sloves_Starter](https://github.com/qeggs-dev/Sloves_Starter))
 
 ### 手动安装
 
@@ -138,6 +113,6 @@ Repeater 的功能拓展主要靠编写对应领域的 Client
 ## 相关仓库
 
 [Sloves_Starter](https://github.com/qeggs-dev/Sloves_Starter)
-[Repeater Nexus](https://github.com/qeggs-dev/repeater-nexus)
-[Repeater Modelinfo Server](https://github.com/qeggs-dev/repeater-modelinfo-server)
-[Static Resources Server](https://github.com/qeggs-dev/static-resources-server)
+[Repeater Nexus](https://github.com/repeater-bot/repeater-nexus)
+[Repeater Modelinfo Server](https://github.com/repeater-bot/repeater-modelinfo-server)
+[Static Resources Server](https://github.com/repeater-bot/static-resources-server)
