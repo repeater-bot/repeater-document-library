@@ -48,7 +48,7 @@ Repeater 系统太复杂了，我认为你大概率没有耐心去深度探索�
 ## Version
 
 Adapted Repeater v4.9.4.0
-Last Update Time: 2026-09-08 13:20:11
+Last Update Time: 2026-09-08 14:34:21
 
 ---
 
@@ -923,6 +923,7 @@ Repeater 使用了 Markdown 语法进行文本渲染
           - http_requests.md
           - metaso.md
           - set_prompt.md
+          - starlark.md
           - system_info.md
           - token_count.md
         - index.md
@@ -11461,6 +11462,41 @@ AI 在调用该工具时，会传递以下参数：
 然后返回 `Prompt seted.`
 [file content end]
 
+[file: "./server-docs/docs/tool_calls/built-in/starlark.md"]
+[file content begin]
+# Starlark
+
+Repeater 的 Starlark 适配器
+允许 AI 在 Repeater 中运行 Starlark 脚本
+
+注册名：`starlark`
+
+接受一个参数
+``` json
+{
+
+  "source": "", // The starlark code source
+  "root_stack_frame_name": "<repeater_starlark_interpreter>", // The name of the root stack frame.
+  "predeclared": null, // The variables to declare before evaluating the expression.
+  "universal": null, // The variables to declare before evaluating the expression.
+  "max_steps": null, // The maximum number of steps to execute. (Default: None)
+  "max_allocs": null, // The maximum number of allocations to execute. (Default: None)
+  "timeout": 5 // The timeout for the evaluation.
+}
+```
+
+
+返回执行结果
+``` json
+{
+  "result": 42, // The result of the executed expression.
+  "error": "", // The error message if the expression execution fails.
+  "traceback": "" // The traceback if the expression execution fails.
+}
+```
+PS: 通常来说，`error` 指的是无执行栈错误，`traceback` 则是有执行栈错误，二者互斥。
+[file content end]
+
 [file: "./server-docs/docs/tool_calls/built-in/system_info.md"]
 [file content begin]
 # System Info
@@ -11531,7 +11567,7 @@ AI 在调用该工具时，会传递以下参数：
 10. [Get Horizontal Ids](./built-in/get_horizontal_ids.md)
 11. [Horizontal Access](./built-in/horizontal_access.md)
 12. [Delete Horizontal Context](./built-in/delete_horizontal_context.md)
-
+13. [Starlark](./built-in/starlark.md)
 [file content end]
 
 [file: "./server-docs/docs/version.md"]
