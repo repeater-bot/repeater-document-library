@@ -47,8 +47,8 @@ Repeater 系统太复杂了，我认为你大概率没有耐心去深度探索�
 
 ## Version
 
-Adapted Repeater v4.9.4.0
-Last Update Time: 2026-09-08 14:34:21
+Adapted Repeater v4.9.6.0
+Last Update Time: 2026-09-11 11:03:53
 
 ---
 
@@ -917,6 +917,7 @@ Repeater 使用了 Markdown 语法进行文本渲染
           - call_model.md
           - delete_horizontal_context.md
           - demo.md
+          - generate_image.md
           - get_horizontal_ids.md
           - get_models.md
           - horizontal_access.md
@@ -11259,6 +11260,33 @@ f"Hello {args.name}, your data is {args.data}"
 ```
 [file content end]
 
+[file: "./server-docs/docs/tool_calls/built-in/generate_image.md"]
+[file content begin]
+# Generate Image
+
+生成图片
+
+注册名：`generate_image`
+
+接受参数:
+``` json
+{
+  "model_id": null, // Unique identifier used to locate and load the target model, if not specified, the model will be selected based on the user's preferences.
+  "brief_summary": "", // The alternate text used after the image is generated.
+  "prompt": "", // The prompt to generate an image.
+  "images": null // The images to use as a reference for the generation.
+}
+```
+
+返回生成后的图片链接：
+``` json
+{
+  "images": [], // The generated images.
+  "markdown_images": [] // The generated images as markdown.
+}
+```
+[file content end]
+
 [file: "./server-docs/docs/tool_calls/built-in/get_horizontal_ids.md"]
 [file content begin]
 # Get Horizontal Ids
@@ -11335,6 +11363,7 @@ f"Hello {args.name}, your data is {args.data}"
 
 该工具用于发送 HTTP 请求
 如需访问内网需要配置 `tool_calls.allow_private_network_requests` 为 `true`
+如需支持使用所有 HTTP 方法需要配置 `tool_calls.tools_configs.http_requests.allowed_http_methods` 为 `ALL` 或手动写出所有方法
 
 注册名：`http_requests`
 
@@ -11351,8 +11380,8 @@ f"Hello {args.name}, your data is {args.data}"
     [
       {
         "type": "request", // The type of request.
-        "method": "", // The HTTP method to use for the request.
-        "id": "", // The ID of the request.
+        "method": "GET", // The HTTP method to use for the request.
+        "id": "parallel_request", // The ID of the request, used to locate which Request returned the Response.
         "url": "", // The target URL of the request.
         "fail_to_retry": null, // Whether to retry the request if it fails.
         "query_params": null, // Query parameters to include in the request URL.
@@ -11376,8 +11405,9 @@ f"Hello {args.name}, your data is {args.data}"
       "sleep_seconds": 10.0 // Sleep on the outside suspends requests on the back end.
     },
     {
-      "type": "request",
       // If the batch had only one request, it could be written like this.
+      "type": "request",
+      "id": "serial_request",
       "method": "GET",
       "url": "https://example.com",
       "fail_to_retry": {
@@ -11568,6 +11598,7 @@ PS: 通常来说，`error` 指的是无执行栈错误，`traceback` 则是有�
 11. [Horizontal Access](./built-in/horizontal_access.md)
 12. [Delete Horizontal Context](./built-in/delete_horizontal_context.md)
 13. [Starlark](./built-in/starlark.md)
+14. [Generate Image](./built-in/generate_image.md)
 [file content end]
 
 [file: "./server-docs/docs/version.md"]
