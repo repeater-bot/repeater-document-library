@@ -47,8 +47,8 @@ Repeater 系统太复杂了，我认为你大概率没有耐心去深度探索�
 
 ## Version
 
-Adapted Repeater v4.9.6.0
-Last Update Time: 2026-09-11 11:03:53
+Adapted Repeater v4.9.7.2
+Last Update Time: 2026-09-15 23:01:15
 
 ---
 
@@ -763,6 +763,9 @@ Repeater 使用了 Markdown 语法进行文本渲染
             - generate.md
             - index.md
           - index.md
+          - similarity
+            - index.md
+            - similarity.md
         - index.md
         - license_api
           - get_requirement_license.md
@@ -833,6 +836,7 @@ Repeater 使用了 Markdown 语法进行文本渲染
             - get
               - get.md
               - length.md
+              - pairs.md
               - part_of.md
             - index.md
             - set
@@ -7312,6 +7316,41 @@ $$H(s) = -\sum_{i=1}^{k} p_i \log_2 p_i$$
 
 - [Chat](./chat_api/index.md)
 - [Image](./image_api/index.md)
+- [Similarity](./similarity/index.md)
+[file content end]
+
+[file: "./server-docs/docs/api_table/generate_api/similarity/index.md"]
+[file content begin]
+# Similarity API
+
+判断两个文本的语义相似度
+返回一个 0-1 之间的浮点数
+数值越大表示越相似
+(由于误差等情况，实际值可能大于 1 或小于 0，可以在客户端对其进行限位)
+
+- [Calculate Similarity](similarity.md)
+[file content end]
+
+[file: "./server-docs/docs/api_table/generate_api/similarity/similarity.md"]
+[file content begin]
+# Calculate Similarity
+
+计算两个文本的相似度
+
+- **`/generate/similarity/{user_id:str}`**
+  - **Requset**
+    - **method:** `POST`
+    - **type:** `JSON`
+    - **Content:**
+      - `model` (str | list[str]): 模型 ID (可选)
+      - `first_text` (str): 第一个提示词
+      - `second_text` (str): 第二个提示词
+  - **Response**
+    - **type:** `JSON`
+    - **Content:**
+      - `similarity` (float): 相似度
+      - `first_text` (str): 第一个提示词
+      - `second_text` (str): 第二个提示词
 [file content end]
 
 [file: "./server-docs/docs/api_table/index.md"]
@@ -8436,6 +8475,25 @@ Repeater 提供了如下对接 Nexus 的接口：
       - `average_content_length` (float): 平均上下文长度
 [file content end]
 
+[file: "./server-docs/docs/api_table/userdata_api/context/get/pairs.md"]
+[file content begin]
+# Get Context Pair API
+
+从当前用户获取上下文对信息
+
+- **`/userdata/context/get_pairs/{user_id:str}`**
+- **`/userdata/context/get_pairs/{user_id:str}.json`**
+  - **Requset**
+    - **method:** `GET`
+  - **Response**
+    - **type:** `JSON列表`
+    - **Content:**
+      - `context_pairs` (list[list[ContentUnit]]): 上下文对列表
+      - `length` (int): 上下文对数量
+      - `context_length` (int): 上下文长度
+      - `total_character_length` (int): 总字符长度
+[file content end]
+
 [file: "./server-docs/docs/api_table/userdata_api/context/get/part_of.md"]
 [file content begin]
 # Part Of Context
@@ -8458,6 +8516,7 @@ Repeater 提供了如下对接 Nexus 的接口：
 
 ## 获取上下文
   - [Get Context API](./get/get.md)
+  - [Get Context Pairs API](./get/pairs.md)
   - [Get Context Length API](./get/length.md)
   - [Get Part Of Context API](./get/part_of.md)
 
@@ -9572,6 +9631,14 @@ PS: 配置管理器会递归扫描环境变量`CONFIG_DIR`下的所有json/yaml�
         // 如果填写为列表，则顺序尝试直到找到第一个有匹配的 ID
         "default_model_id": "chat",
 
+        // 默认图像模型 ID
+        // 如果填写为列表，则顺序尝试直到找到第一个有匹配的 ID
+        "default_image_model_id": "image",
+
+        // 默认嵌入模型 ID
+        // 如果填写为列表，则顺序尝试直到找到第一个有匹配的 ID
+        "default_embedding_model_id": "embedding",
+
         // 随机选择模型 ID 的概率衰减指数
         "random_decay_index": 0.5,
 
@@ -9698,6 +9765,55 @@ PS: 配置管理器会递归扫描环境变量`CONFIG_DIR`下的所有json/yaml�
                 
                 // 系统信息的拓展内容
                 "extra_info": {}
+            },
+
+            // 水平访问配置
+            "horizontal": {
+
+                // 水平实例的服务器列表
+                // 键为访问的 ID
+                // 值为访问的 URL
+                "servers": {
+                    "repeater": "http://localhost:7645",
+                    "nightlight": "http://localhost:8345",
+                    "laurel": "http://localhost:7452",
+                    "mimosa": "http://localhost:8652",
+                    "viburnum": "http://localhost:9635"
+                },
+
+                // 访问时所使用的用户 ID
+                "local_id": "repeater_horizontal",
+
+                // 横向访问时使用的用户ID策略
+                // 允许的值有：
+                // - "local_instance"：仅传递本机 user_id
+                // - "separate"：每个访客传递不同的 user_id
+                // - "users"：使用用户的 user_id
+                "user_id_strategy": "separate",
+
+                // 当模型支持在上下文中标记发言人时
+                // 可以使用该值区分上下文中的发言者
+                // 以确保不会干扰正常的上下文
+                "role_name": null,
+
+                // 用户信息配置
+                "user_info": {
+                    // 用户名
+                    "username": "Repeater",
+
+                    // 用户昵称
+                    "nickname": "复读机",
+
+                    // 年龄
+                    // 可以选择数字
+                    // 或者一个浮点数
+                    "age": 18,
+
+                    // 性别
+                    // 无可选值，单纯字符串
+                    // 可以按照自己的偏好填写
+                    "gender": "girl",
+                }
             }
         }
     },
@@ -10178,6 +10294,13 @@ PS: 配置管理器会递归扫描环境变量`CONFIG_DIR`下的所有json/yaml�
     }
 }
 ```
+
+主配置可以被拆分为多个文件
+只要处于同一个目录下
+系统就能自动按照名字或给定的加载顺序
+将配置文件进行组合
+你可以以你自己喜欢的方式去编排这些文件
+并最终得到一个完整的配置
 [file content end]
 
 [file: "./server-docs/docs/configs/regex_checker.md"]
@@ -10230,6 +10353,22 @@ PS: 首行必须是`[REGEX PARALLEL FILE]`或`[REGEX SERIES FILE]`
     // 用于指定消息处理模型
     // 如果填写为列表，则顺序尝试直到找到第一个有匹配的 ID
     "model_id": null,
+
+    // (str | list[str]) 图片模型 ID
+    // 用于指定图片生成与编辑模型
+    // 如果填写为列表，则顺序尝试直到找到第一个有匹配的 ID
+    "image_model_id": null,
+
+    // (str | list[str]) 嵌入模型 ID
+    // 用于指定嵌入模型
+    // 如果填写为列表，则顺序尝试直到找到第一个有匹配的 ID
+    "embedding_model_id": null,
+
+    // (bool) 是否在 FIM 模式下启用回显
+    "fim_echo": null,
+
+    // (int) 随机数种子
+    "seed": null,
 
     // (float) 模型温度参数
     // 温度越高模型输出的随机性就越高
@@ -10293,10 +10432,22 @@ PS: 首行必须是`[REGEX PARALLEL FILE]`或`[REGEX SERIES FILE]`
     // 模型越倾向于讨论新话题
     "presence_penalty": null,
 
+    // (str) 模型推理强度
+    // 允许的值有：
+    // - "low"
+    // - "medium"
+    // - "high"
+    // - "xhigh"
+    // - "max"
+    "reasoning_effort": null,
+
     // (bool) 是否发送用户 ID 到服务端
     // 如果为 true，则 Repeater 会讲 user_id 进行 sha256 后填充到 `user_id` 字段中
     // 需要服务端明确支持 `user_id` 字段
     "send_user_id": null,
+
+    // (dict[str, Any]) 额外请求参数
+    "extra_bodys": null,
 
     // Generate Loop ----------------------------------------------
 
@@ -10305,10 +10456,6 @@ PS: 首行必须是`[REGEX PARALLEL FILE]`或`[REGEX SERIES FILE]`
     "max_generate_times": null,
 
     // Render ----------------------------------------------
-
-    // (str) Request Statistics Message 模板
-    // 用于生成一段自定义的统计文本
-    "request_statistics_template": null,
 
     // (str) 渲染风格
     // 用于指定文本转图片时的CSS样式文件
@@ -10343,6 +10490,20 @@ PS: 首行必须是`[REGEX PARALLEL FILE]`或`[REGEX SERIES FILE]`
 
     // Context ----------------------------------------------
 
+    // (int) 定义上下文问的极限字数
+    // Repeater会以一对消息为单位去删除过多的部分。
+    "context_shrink_limit": null,
+
+    // (bool) 删除上下文里的推理内容
+    // 大部分 API 会拒绝我们回传推理内容
+    // 你可以设置为 false 来关闭此功能
+    // 但某些 API 可能会因此调用失败
+    "remove_reasoning_prompt": null,
+
+    // (str) Request Statistics Message 模板
+    // 用于生成一段自定义的统计文本
+    "request_statistics_template": null,
+
     // (bool) 是否保存上下文
     // 此选项会被API接口中传入的 save_context 参数覆盖
     "save_context": null,
@@ -10358,28 +10519,20 @@ PS: 首行必须是`[REGEX PARALLEL FILE]`或`[REGEX SERIES FILE]`
     // 如果为 false 则多模态内容将以文本的形式发送
     "make_multimodal_message": null,
 
-    // (int) 定义上下文问的极限字数
-    // Repeater会以一对消息为单位去删除过多的部分。
-    "context_shrink_limit": null,
+    // Tools --------------------------------------------------------
 
-    // (str) 控制模型的推理强度
-    // 允许的值有：
-    // - "low"
-    // - "medium"
-    // - "high"
-    // - "xhigh"
-    // - "max"
-    // - null
-    "reasoning_effort": null,
-
-    // (bool) 删除上下文里的推理内容
-    // 大部分 API 会拒绝我们回传推理内容
-    // 你可以设置为 false 来关闭此功能
-    // 但某些 API 可能会因此调用失败
-    "remove_reasoning_prompt": null,
+    // (bool) 是否在工具调用时删除推理链数据
+    "tool_calling_remove_reasoning": null,
 
     // (list[str]) 允许调用的工具列表
     "allowed_tool_calls": null,
+
+    // (str) 横向访问时使用的用户ID策略
+    // 允许的值有：
+    // - "local_instance"：仅传递本机 user_id
+    // - "separate"：每个访客传递不同的 user_id
+    // - "users"：使用用户的 user_id
+    "horizontal_access_user_id_strategy": null,
 
     // User Profile -------------------------------------------------
 
