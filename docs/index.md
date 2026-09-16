@@ -516,6 +516,7 @@ Repeater 还有一个自动化客户端，负责生成日记
 
 - [Repeater Server](https://github.com/repeater-bot/repeater-ai-chatbot) Repeater 主服务
 - [Nonebot Repeater Client](https://github.com/repeater-bot/repeater-onebot-v11-client) 基于 Nonebot OneBot v11 的 Repeater 客户端实现
+- [Repeater Web UI](https://github.com/repeater-bot/repeater-web-ui) 适用于 Repeater 主服务的 Web 客户端实现
 - [Repeater Nexus](https://github.com/repeater-bot/repeater-nexus) Repeater 数据共享服务
 - [Repeater Notes Client](https://github.com/repeater-bot/repeater-notes-client) Repeater 自动化日记客户端
 - [Auto Backup](https://github.com/qeggs-dev/auto-backup) 自动数据备份程序
@@ -753,8 +754,9 @@ Repeater 并未有过所谓的 Feelings Server 组件
 
 ### 文档
 
-PS: 由于项目对于个人来说过大，大多数项目文档选择了母语，
-而非更国际化的英语，因为这也是给开发者自己写的
+PS: 由于项目对于个人来说过大
+大多数项目文档选择了母语
+而非更国际化的英语
 
 下面是 Repeater 的全部文档:
 
@@ -767,6 +769,10 @@ PS: 由于项目对于个人来说过大，大多数项目文档选择了母语�
 #### Repeater Client
 
 {{merge_text("./client-docs/README.md")}}
+
+#### Repeater Web UI
+
+{{merge_text("./webui-docs/README.md")}}
 
 #### Model INFO Server
 
