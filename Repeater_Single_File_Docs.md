@@ -48,7 +48,7 @@ Repeater 系统太复杂了，我认为你大概率没有耐心去深度探索�
 ## Version
 
 Adapted Repeater v4.9.7.2
-Last Update Time: 2026-09-15 23:01:15
+Last Update Time: 2026-09-16 15:21:33
 
 ---
 
@@ -553,6 +553,7 @@ Repeater 还有一个自动化客户端，负责生成日记
 
 - [Repeater Server](https://github.com/repeater-bot/repeater-ai-chatbot) Repeater 主服务
 - [Nonebot Repeater Client](https://github.com/repeater-bot/repeater-onebot-v11-client) 基于 Nonebot OneBot v11 的 Repeater 客户端实现
+- [Repeater Web UI](https://github.com/repeater-bot/repeater-web-ui) 适用于 Repeater 主服务的 Web 客户端实现
 - [Repeater Nexus](https://github.com/repeater-bot/repeater-nexus) Repeater 数据共享服务
 - [Repeater Notes Client](https://github.com/repeater-bot/repeater-notes-client) Repeater 自动化日记客户端
 - [Auto Backup](https://github.com/qeggs-dev/auto-backup) 自动数据备份程序
@@ -1073,6 +1074,8 @@ Repeater 使用了 Markdown 语法进行文本渲染
       - warning.css
       - yellow.css
   - static-resources-server-docs
+    - README.md
+  - webui-docs
     - README.md
 
 ### 贡献鸣谢
@@ -6404,8 +6407,9 @@ Presence_Penalty={{presence_penalty}}
 
 ### 文档
 
-PS: 由于项目对于个人来说过大，大多数项目文档选择了母语，
-而非更国际化的英语，因为这也是给开发者自己写的
+PS: 由于项目对于个人来说过大
+大多数项目文档选择了母语
+而非更国际化的英语
 
 下面是 Repeater 的全部文档:
 
@@ -12759,6 +12763,43 @@ PS：`CHAT` 类型命令大部分都做到了支持视觉输入
 
 ## 相关仓库
 - [Repeater Server](https://github.com/repeater-bot/repeater-ai-chatbot)
+[file content end]
+
+#### Repeater Web UI
+
+[file: "./webui-docs/README.md"]
+[file content begin]
+<div style="text-align: center;"> 
+
+# Repeater Web UI
+
+![LICENSE](https://img.shields.io/badge/license-MIT-blue.svg) ![AIGenerated](https://img.shields.io/badge/AI-Generated-yellow.svg) 
+
+</div>
+
+## 介绍
+
+本项目是一个适用于[Repeater](https://github.com/repeater-bot/repeater-ai-bot) 的 Web UI 形式的客户端适配器。
+可以提供交互式的 API 操作界面，方便用户快速地操作 Repeater 的 API。
+
+## 安装
+
+首先，请确保你已经部署好 Repeater
+然后，按照以下步骤安装 Web UI：
+
+1. 克隆此仓库到本地
+2. 进入项目目录：<span title="以克隆出来的目标目录为准">`cd repeater-web-ui` </span>
+3. 下载依赖项：<span title="curl -fsSL &quot;https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js&quot; -o &quot;web/vendor/chart.min.js&quot;"> [chart.js](https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js) </span> and <span title="curl -fsSL &quot;https://cdn.jsdelivr.net/npm/marked/marked.min.js&quot; -o &quot;web/vendor/marked.min.js&quot;"> [marked](https://cdn.jsdelivr.net/npm/marked/marked.min.js) </span> (可以执行 [`download_vendor.sh`](./download_vendor.sh) 或 [`download_vendor.ps1`](./download_vendor.ps1) 来下载)
+4. 在 Repeater 主服务器下新建一个 <span title="可自定义位置，但要保证与配置一致"> `web` </span> 目录
+5. 进入项目配置，修改 `web.index_web_file` 为 `./web/index.html` 让服务器能够将根路径映射到 `web/index.html` 文件
+6. 修改配置字段 `web.web_directory` 为 `./web`，让服务器能够将 `/web` 路由下的所有请求都映射到 `./web` 目录下
+7. 运行 Repeater （如果已经运行，则重载配置即可）
+
+运行成功后，访问 Repeater 服务器的根路径，即可看到 Web UI。
+
+## License
+
+本项目使用 [MIT](./LICENSE) 许可证。
 [file content end]
 
 #### Model INFO Server
