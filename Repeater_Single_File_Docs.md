@@ -48,7 +48,7 @@ Repeater 系统太复杂了，我认为你大概率没有耐心去深度探索�
 ## Version
 
 Adapted Repeater v4.9.7.2
-Last Update Time: 2026-09-16 22:33:22
+Last Update Time: 2026-09-22 23:08:15
 
 ---
 
@@ -779,6 +779,7 @@ Repeater 使用了 Markdown 语法进行文本渲染
           - index.md
           - model_info.md
           - model_list.md
+          - model_refresh.md
         - nexus_api
           - download.md
           - download_env.md
@@ -922,7 +923,9 @@ Repeater 使用了 Markdown 语法进行文本渲染
           - call_model.md
           - delete_horizontal_context.md
           - demo.md
+          - dispatch_trigger.md
           - generate_image.md
+          - get_dispatch_bots.md
           - get_horizontal_ids.md
           - get_models.md
           - horizontal_access.md
@@ -7515,6 +7518,7 @@ API_INFO
 ## Model Info API
 - [Model INFO API](./model_info.md)
 - [Model List API](./model_list.md)
+- [Model Refresh API](./model_refresh.md)
 [file content end]
 
 [file: "./server-docs/docs/api_table/model_api/model_info.md"]
@@ -7548,6 +7552,24 @@ API_INFO
     - **Content:**
       - `message` (str): 状态信息
       - `models` (list[[API_INFO](./api_info_obj.md)]): 模型列表
+[file content end]
+
+[file: "./server-docs/docs/api_table/model_api/model_refresh.md"]
+[file content begin]
+# Model Refresh
+
+刷新模型池中的模型信息
+
+- **`/model_refresh`**
+- **`/model_refresh/{provider_id: str}`**
+  - **method**: `POST`
+  - **Response**
+    - **type:** `JSON`
+    - **Content:**
+      - `message` (str): 状态信息(成功情况下永远为 "Models refreshed successfully")
+      - `status` (str): 状态码(成功情况下永远为 "success")
+
+当不传入 `provider_id` 时，将刷新所有供应商的模型信息
 [file content end]
 
 [file: "./server-docs/docs/api_table/nexus_api/download.md"]
@@ -9816,6 +9838,13 @@ PS: 配置管理器会递归扫描环境变量`CONFIG_DIR`下的所有json/yaml�
                     // 可以按照自己的偏好填写
                     "gender": "girl",
                 }
+            },
+
+            // 调度触发器配置
+            "dispatch_trigger": {
+
+                // 调度触发器服务的 URL
+                "server_base_url": "http://localhost:5000",
             }
         }
     },
@@ -11415,6 +11444,38 @@ f"Hello {args.name}, your data is {args.data}"
 ```
 [file content end]
 
+[file: "./server-docs/docs/tool_calls/built-in/dispatch_trigger.md"]
+[file content begin]
+# Dispatch Trigger
+
+按 Repeater 客户端通信协议向客户端发起触发请求
+需在 `tool_calls.tools_configs.dispatch_trigger` 中配置客户端地址
+
+注册名：`dispatch_trigger`
+
+接受六个参数
+``` json
+{
+  "bot_id": "", // The Bot id.
+  "handler": "", // The target Handler that needs to be executed uses a Trigger match if it starts with a slash and a component ID match if it starts without a slash.
+  "message": "", // The cq.code message that needs to be sent.
+  "args": null, // Optionally, the message data will be overwritten when args is present.
+  "message_id": 0, // Message ID, which identifies the ID of the current message.
+  "timeout": 2400 // Timeout for the request.
+}
+```
+
+返回结果
+``` json
+{
+  "messages": [], // Copy back the results of the execution.
+  "error": null, // An error occurred during parsing.
+  "retcode": 0 // The response code returned by the target Handler.
+}
+```
+由于该工具会直接返回响应结果文本，所以此处响应格式仅供参考
+[file content end]
+
 [file: "./server-docs/docs/tool_calls/built-in/generate_image.md"]
 [file content begin]
 # Generate Image
@@ -11440,6 +11501,32 @@ f"Hello {args.name}, your data is {args.data}"
   "markdown_images": [] // The generated images as markdown.
 }
 ```
+[file content end]
+
+[file: "./server-docs/docs/tool_calls/built-in/get_dispatch_bots.md"]
+[file content begin]
+# Get Dispatch Bots
+
+获取客户端支持的 Bot 列表
+
+注册名：`get_dispatch_bots`
+
+用来在调用 `dispatch_trigger` 之前发现可用的 `bot_id`。
+
+接受一个参数
+``` json
+{
+  "timeout": 60 // Request timeout
+}
+```
+
+返回 bot_id 列表：
+``` json
+{
+    "bots_list": ["123456789", "987654321"] // List of bot_id
+}
+```
+由于该工具会直接返回响应结果文本，所以此处响应格式仅供参考
 [file content end]
 
 [file: "./server-docs/docs/tool_calls/built-in/get_horizontal_ids.md"]
@@ -11754,6 +11841,8 @@ PS: 通常来说，`error` 指的是无执行栈错误，`traceback` 则是有�
 12. [Delete Horizontal Context](./built-in/delete_horizontal_context.md)
 13. [Starlark](./built-in/starlark.md)
 14. [Generate Image](./built-in/generate_image.md)
+15. [Get Dispatch Bots](./built-in/get_dispatch_bots.md)
+16. [Dispatch Trigger](./built-in/dispatch_trigger.md)
 [file content end]
 
 [file: "./server-docs/docs/version.md"]
@@ -11895,8 +11984,11 @@ PS: 此处的长度评分函数并非实际算法，仅为演示使用
 | curlify2   | 2.0.0   | MIT License  | [MIT](https://github.com/marcuxyz/curlify2/blob/master/LICENSE)        | *Entire Project*              |
 | numpy      | 2.4.2   | BSD 3-Clause | [BSD-3-Clause](https://github.com/numpy/numpy/blob/main/LICENSE.txt)   | *Entire Project*              |
 | cachetools | 7.1.4   | MIT License  | [MIT](https://github.com/tkem/cachetools/blob/master/LICENSE)          | *Entire Project*              |
-| croniter   | 6.2.2   | MIT License  | [MIT](https://github.com/pallets-eco/croniter/blob/master/LICENSE)     | Hello Content                 |
+| croniter   | 6.2.2   | MIT License  | [MIT](https://github.com/pallets-eco/croniter/blob/master/LICENSE)     | *Entire Project*              |
 | tokenizer  | 0.23.1  | MIT License  | [MIT](https://github.com/mideind/Tokenizer/blob/master/LICENSE.txt)    | Count tokens in a string      |
+| typing-extensions | 4.16.0| Python Software Foundation License | [PSFL](https://github.com/python/typing_extensions/blob/master/typing_extensions/LICENSE) | *Entire Project* |
+| fastapi    | 0.127.0 | MIT License  | [MIT](https://github.com/fastapi/fastapi/blob/master/LICENSE)          | external_trigger              |
+| uvicorn    | 0.39.0  | BSD License  | [BSD-3-Clause](https://github.com/Kludex/uvicorn/blob/master/LICENSE)  | external_trigger              |
 
 具体依赖的License请查看[LICENSES.md](LICENSES.md)
 
@@ -11946,6 +12038,44 @@ PS: 此处的长度评分函数并非实际算法，仅为演示使用
 
 PS: 由于OneBot客户端通常为内网服务，所以默认情况下所有服务都不需要配置公网IP访问
 但你需要保证后端可以连接到你设定的API端口，OneBot客户端可以连接到指定社交平台的服务器
+
+---
+
+## External Trigger
+
+这是一个可以直接用 HTTP 请求触发并使用对应的 Bot API 输出执行的接入口
+
+### API
+
+`GET /repeater/api/external_trigger/bots_list`
+
+获取所有已注册的 Bot
+
+`POST /repeater/api/external_trigger/call`
+
+发送消息并指定一个 Handler 执行
+
+#### 参数
+
+| Parameter | Type | Required | Description |
+| :---: | :---: | :---: | :--- |
+| bot_id | str | Yes | The Bot id. |
+| handler | str | Yes | The target Handler that needs to be executed uses a Trigger match if it starts with a slash and a component ID match if it starts without a slash. |
+| namespace | str  | Yes | The namespace now user is using. |
+| message | str | Yes | The cq.code message. |
+| args | str | No | Optionally, the message data will be overwritten when args is present. |
+| message_id | int | Yes | Message ID, which identifies the ID of the current message. |
+| font | int | No | The font of the message. |
+| nickname | str | No | The nickname of the user. |
+| sex | str | No | The gender of the user. |
+| age | int | No | The age of the user. |
+| card | str | No | The card of the user. |
+| area | str | No | The area of the user. |
+| level | str | No | The level of the user. |
+| role | str | No | The role of the user. |
+| title | str | No | The title of the user. |
+| to_me | bool | No | Whether the message is directed to me. |
+| sub_type | str | No | The sub type of the message. |
 
 ---
 
@@ -12196,6 +12326,19 @@ main_api.json
     // 使用的编码
     "text_file_encoding": "utf-8",
 
+    // 外部触发器服务器
+    "external_trigger_server": {
+
+        // 启用服务器
+        "enabled": false,
+
+        // 服务器地址
+        "host": "127.0.0.1",
+
+        // 端口号
+        "port": 5000
+    },
+
     // 入口忽略配置
     "ignore_enter": {
         // 忽略指定群聊的消息
@@ -12382,6 +12525,7 @@ PS：该配置文件是专门用于对接ChatTTS的
 | `terminate`                | `ter`    | `Terminate`               | `CONTROL`   | 4.9.3.0        | 终止任务                       | 无                                        | 终止当前任务以及所在父级的整条任务树 |
 | `debugMode`                | `dm`     | `DebugMode`               | `CONTROL`   | 4.9.3.0        | 调试模式                       | 格式为：命令 参数                          | 启用调试模式运行一个命令 |
 | `scheduling`               | `scdl`   | `Scheduling`              | `CONTROL`   | 4.9.3.0        | 定时任务                       | 格式为：{cron 表达式} 命令 参数             | 创建一个定时任务，注意花括号需要保留以告知程序 cron 表达式的边界 |
+| `similar`                  | `sml`    | `Similar`                 | `CONTROL`   | 4.9.7.0        | 相似度判断                     | 第一行为相似度，比较第二行与第三行，并执行标签 | 当高于阈值时，执行 `similar:` 标签，否则执行 `dissimilar:` 标签 |
 
 ### Variable Command
 
@@ -12398,7 +12542,7 @@ PS：该配置文件是专门用于对接ChatTTS的
 | Command                    | Abridge  | Full Name                 | Type        | Joined Version | Description                   | Parameter Description                     | Remarks |
 | :---                       | :---     | :---                      | :---:       | :---           | :---                          | :---                                      | :---    |
 | ` `                        | ` `      | ` `                       | `CHAT`      | 4.0 Beta       | 默认命令，自然语言对话          | 自然语言输入                               | 当@复读机的时候，如果没有命中其他命令就会执行这个 Handler |
-| `chat`                     | `c`      | `Chat`                    | `CHAT`      | 4.0 Beta       | 与机器人对话                   | 自然语言输入                               | 强制模型用文字输出，绕过Markdown渲染检查 |
+| `chat`                     | `c`      | `Chat`                    | `CHAT`      | 4.0 Beta       | 与机器人对话                   | 自然语言输入                               | 强制模型用文字输出，绕过 Markdown 渲染检查 (工具调用与推理内容仍渲染) |
 | `keepAnswering`            | `ka`     | `KeepAnswering`           | `CHAT`      | 4.0 Beta       | 持续对话(常规)                 | 无                                        | 无须输入，AI再次回复 |
 | `keepReasoning`            | `kr`     | `KeepReasoning`           | `CHAT`      | 4.0 Beta       | 持续对话(推理)                 | 无                                        | 无须输入，AI再次使用推理回复 |
 | `renderChat`               | `rc`     | `RenderChat`              | `CHAT`      | 4.0 Beta       | 渲染Markdown回复               | 自然语言输入                              | 强制渲染图片输出 |
@@ -12415,6 +12559,7 @@ PS：该配置文件是专门用于对接ChatTTS的
 | `toGroupChat`              | `tgc`    | `ToGroupChat`             | `CHAT`      | 4.7.5.0        | 使用群聊身份进行对话            | 群号 自然语言输入                          | 使用群聊身份进行对话 |
 | `toPrivateChat`            | `tpc`    | `ToPrivateChat`           | `CHAT`      | 4.7.5.0        | 使用私聊身份进行对话            | 自然语言输入                               | 使用私聊身份进行对话 |
 | `smartAt`                  | `smat`   | `SmartAT`                 | `CHAT`      | 4.8.1.3        | 默认命令的命令版本              | 自然语言输入                               | 使用该命令，可以用命令的方式触发默认 Handler |
+| `textChat`                 | `txc`    | `TextChat`                | `CHAT`      | 4.9.4.0        | 强制让所有内容以文本方式显示     | 自然语言输入                               | 不建议用于直接输出，可以用于其他命令的输入 |
 
 ### FIM Command
 
@@ -12499,6 +12644,8 @@ PS：该配置文件是专门用于对接ChatTTS的
 | `addPresetDirectives`      | `apd`    | `AddPresetDirectives`     | `CONFIG`    | 4.6.1.0        | 添加 Directive 预设           | `<type>: <name>`                          | 添加 Directive |
 | `removePresetDirectives`   | `rpd`    | `RemovePresetDirectives`  | `CONFIG`    | 4.6.1.0        | 移除 Directive 预设           | `<type>: <name>`                          | 移除 Directive |
 | `setImageModel`            | `sim`    | `SetImageModel`           | `CONFIG`    | 4.8.0.0        | 设置 Image Model              | 模型名称                                  | 设置 Image Model |
+| `horizontalAccessUserIDStrategy`| `hauids` | `HorizontalAccessUserIDStrategy` | `CONFIG`    | 4.9.6.0 | 设置水平访问用户 ID 策略 | `local_instance`, `separate` or `user`     | 当 Repeater 想要横向访问其他实例时，所使用的用户 ID 策略 |
+| `setEmbeddingModel`        | `sem`    | `SetEmbeddingModel`       | `CONFIG`    | 4.9.7.0        | 设置 Embedding Model          | 模型名称                                  | 设置 Embedding Model |
 
 ### Branch Command
 
@@ -12584,6 +12731,7 @@ PS：该配置文件是专门用于对接ChatTTS的
 | :---                       | :---     | :---                      | :---:       | :---           | :---                          | :---                                      | :---    |
 | `getModelList`             | `gml`    | `GetModelList`            | `MODEL`     | 4.3.7.4        | 获取模型列表                   | 模型类型(目前只有`chat`)                    | 获取模型列表 |
 | `pingProviderHost`         | `pph`    | `PingProviderHost`        | `MODEL`     | 4.6.4.0        | Ping 供应方主机                | 无                                        | 向模型供应方主机发送 Ping 请求 |
+| `refreshModels`            | `rm`     | `RefreshModels`           | `MODEL`     | 4.3.7.4        | 刷新模型列表                   | 模型供应商(可选)                           | 刷新模型列表 |
 
 ### Nexus Command
 
@@ -12629,6 +12777,12 @@ PS：该配置文件是专门用于对接ChatTTS的
 | `tokenizer`                | `tiz`    | `Tokenizer`               | `STATISTIC` | 4.8.5.0        | 计算一个字符串的 Token 数       | 待计算的字符串                             | 计算一个字符串的 Token 数，需要引用一个 `tokenizer.json` 文件 |
 | `tokenizerText`            | `tizt`   | `TokenizerText`           | `STATISTIC` | 4.8.5.0        | 计算一个字符串的 Token 数       | 待计算的字符串                             | 同上，但 `Most frequent` 部分将使用文本而不是图片输出 |
 
+### Similarity Command
+
+| Command                    | Abridge  | Full Name                 | Type         | Joined Version | Description                   | Parameter Description                     | Remarks |
+| :---                       | :---     | :---                      | :---:        | :---           | :---                          | :---                                      | :---    |
+| `similarity`               | `smrt`   | `Similarity`              | `SIMILARITY` | 4.7.5.0        | 获取相似度                     | `first_text` and `second_text` 包裹的文本  | 获取两段文本的相似度 |
+
 ### See Cmd Command
 
 | Command                    | Abridge  | Full Name                 | Type        | Joined Version | Description                   | Parameter Description                     | Remarks |
@@ -12673,6 +12827,8 @@ PS：该配置文件是专门用于对接ChatTTS的
 | `randomFortune`            | `rf`     | `RandomFortune`           | `GAMES`     | 4.6.4.0        | 随机运势                       | @指定用户（可选）                          | 根据用户与时间生成每日固定的随机数 |
 | `uselessButton`            | `ub`     | `UselessButton`           | `GAMES`     | 4.6.4.0        | 随机按钮                       | 次数（可选）                               | 多按几次或许会有意外收获 |
 | `word`                     | `word`   | `Word`                    | `GAMES`     | 4.8.5.0        | 获取一句话，或是修改它          | 填充内容                                   | 如果有传入参数，则使用传入的内容覆盖之前的内容，否则返回上一次填充的内容 |
+| `slotFiller`               | `sfl`    | `SlotFiller`              | `GAMES`     | 4.9.8.0        | 填空游戏                       | 填空名单                                   | 在参数中输入名单，命令会等待你输入模板并自动用名单填空，直到新消息不在含有括号 |
+| `slotCaster`               | `sct`    | `SlotCaster`              | `GAMES`     | 4.9.8.0        | 填空游戏                       | 填空模板                                   | 在参数在输入模板，命令会等待你输入名单并自动用名单填空，直到新的消息完全由空格组成 |
 
 ### Other Command
 | Command                    | Abridge  | Full Name                 | Type        | Joined Version | Description                   | Parameter Description                     | Remarks |
