@@ -770,6 +770,8 @@ PS: 由于项目对于个人来说过大
 
 {{merge_text("./client-docs/README.md")}}
 
+{{merge_text("./client-docs/docs")}}
+
 #### Repeater Web UI
 
 {{merge_text("./webui-docs/README.md")}}
