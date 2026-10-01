@@ -10,7 +10,7 @@
 
 ## Version
 
-Adapted Repeater v4.9.7.2
+Adapted Repeater v4.9.11.0
 Last Update Time: {{ now.strftime("%Y-%m-%d %H:%M:%S") }}
 
 ---
