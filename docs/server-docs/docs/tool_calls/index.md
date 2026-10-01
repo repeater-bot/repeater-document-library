@@ -20,3 +20,5 @@
 14. [Generate Image](./built-in/generate_image.md)
 15. [Get Dispatch Bots](./built-in/get_dispatch_bots.md)
 16. [Dispatch Trigger](./built-in/dispatch_trigger.md)
+17. [Dispatch Ask Questions](./built-in/dispatch_ask_questions.md)
+18. [Url to Image](./built-in/url_to_image.md)
