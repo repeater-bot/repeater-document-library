@@ -47,8 +47,8 @@ Repeater 系统太复杂了，我认为你大概率没有耐心去深度探索�
 
 ## Version
 
-Adapted Repeater v4.9.7.2
-Last Update Time: 2026-09-29 15:06:51
+Adapted Repeater v4.9.11.0
+Last Update Time: 2026-10-01 15:55:15
 
 ---
 
@@ -974,6 +974,7 @@ Repeater 使用了 Markdown 语法进行文本渲染
           - call_model.md
           - delete_horizontal_context.md
           - demo.md
+          - dispatch_ask_questions.md
           - dispatch_trigger.md
           - generate_image.md
           - get_dispatch_bots.md
@@ -986,6 +987,7 @@ Repeater 使用了 Markdown 语法进行文本渲染
           - starlark.md
           - system_info.md
           - token_count.md
+          - url_to_image.md
         - index.md
       - version.md
     - README.md
@@ -11495,6 +11497,34 @@ f"Hello {args.name}, your data is {args.data}"
 ```
 [file content end]
 
+[file: "./server-docs/docs/tool_calls/built-in/dispatch_ask_questions.md"]
+[file content begin]
+# Dispatch Ask Questions
+
+向用户发起问题，并获取用户的回答
+
+**注意：** 该工具要求 Dispatch 服务器中必须包含 `/echo` 与 `/npecho` 两个 Handler，且在填参为空时等待用户输入。
+
+接受三个参数
+``` json
+{
+  "bot_id": "1234567890", // "The Bot id."
+  "ask_prompt": "", // The question to ask the user.
+  "timeout": 2400, // Timeout for the request.
+}
+```
+
+返回结果
+``` json
+{
+  "messages": [], // User's answer.
+  "error": null, // An error occurred during parsing.
+  "retcode": 0 // The response code returned by the target Handler.
+}
+```
+由于该工具会直接返回响应结果文本，所以此处响应格式仅供参考
+[file content end]
+
 [file: "./server-docs/docs/tool_calls/built-in/dispatch_trigger.md"]
 [file content begin]
 # Dispatch Trigger
@@ -11535,7 +11565,7 @@ f"Hello {args.name}, your data is {args.data}"
 
 注册名：`generate_image`
 
-接受参数:
+接受四个参数:
 ``` json
 {
   "model_id": null, // Unique identifier used to locate and load the target model, if not specified, the model will be selected based on the user's preferences.
@@ -11660,7 +11690,7 @@ f"Hello {args.name}, your data is {args.data}"
 
 注册名：`http_requests`
 
-接受参数：
+接受七个参数：
 ``` json
 {
   "base_url": "", // The base URL shared by all requests.
@@ -11743,7 +11773,7 @@ Metaso 用于快速进行互联网搜索并进行 AI 总结
 
 注册名：`metaso`
 
-接受参数：
+接受六个参数：
 ``` json
 {
   "q": "", // The query to search for
@@ -11794,7 +11824,7 @@ Repeater 的 Starlark 适配器
 
 注册名：`starlark`
 
-接受一个参数
+接受参数
 ``` json
 {
 
@@ -11870,6 +11900,33 @@ PS: 通常来说，`error` 指的是无执行栈错误，`traceback` 则是有�
 ```
 [file content end]
 
+[file: "./server-docs/docs/tool_calls/built-in/url_to_image.md"]
+[file content begin]
+# URL to Image
+
+读取 URL 中的图像内容 (需要模型支持在工具调用中传入图像)
+
+接受一个参数：
+``` json
+{
+  "urls": []
+}
+```
+
+返回该图像的图片内容（该工具构造的不是纯文本响应，而是图片内容，此处展示的是消息结构）
+
+```json
+[
+  {
+    "type": "image_url",
+    "image_url": ""
+  },
+
+  ...
+]
+```
+[file content end]
+
 [file: "./server-docs/docs/tool_calls/index.md"]
 [file content begin]
 # Tool Calls
@@ -11894,6 +11951,8 @@ PS: 通常来说，`error` 指的是无执行栈错误，`traceback` 则是有�
 14. [Generate Image](./built-in/generate_image.md)
 15. [Get Dispatch Bots](./built-in/get_dispatch_bots.md)
 16. [Dispatch Trigger](./built-in/dispatch_trigger.md)
+17. [Dispatch Ask Questions](./built-in/dispatch_ask_questions.md)
+18. [Url to Image](./built-in/url_to_image.md)
 [file content end]
 
 [file: "./server-docs/docs/version.md"]
